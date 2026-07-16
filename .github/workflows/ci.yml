@@ -32,13 +32,8 @@ jobs:
       - name: Check code formatting and linting
         run: pnpm run check
 
-      - name: Install Chromium
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser
-          if [ ! -f /usr/bin/chromium ] && [ -f /usr/bin/chromium-browser ]; then
-            sudo ln -s /usr/bin/chromium-browser /usr/bin/chromium
-          fi
+      - name: Install Playwright Chromium & Dependencies
+        run: pnpm exec playwright install chromium --with-deps
 
       - name: Run unit tests
         run: pnpm run test:unit
