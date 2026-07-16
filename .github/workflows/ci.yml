@@ -27,13 +27,13 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci
 
       - name: Check code formatting and linting
         run: pnpm run check
 
       - name: Install Playwright Chromium & Dependencies
-        run: pnpm exec playwright install chromium --with-deps
+        run: pnpm dlx playwright install chromium --with-deps
 
       - name: Run unit tests
         run: pnpm run test:unit
