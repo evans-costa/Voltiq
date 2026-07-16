@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    name: Verify Code, Tests and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check code formatting and linting
+        run: pnpm run check
+
+      - name: Install Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+          if [ ! -f /usr/bin/chromium ] && [ -f /usr/bin/chromium-browser ]; then
+            sudo ln -s /usr/bin/chromium-browser /usr/bin/chromium
+          fi
+
+      - name: Run unit tests
+        run: pnpm run test:unit
+
+      - name: Build project
+        run: pnpm run build
